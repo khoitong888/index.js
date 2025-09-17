@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hướng dẫn bật WLAN & xem mật khẩu Wi‑Fi — Giao diện Siêu Đẹp</title>
+  <title>k</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <meta name="description" content="Trang hướng dẫn chi tiết cách bật dịch vụ WLAN AutoConfig và lấy mật khẩu Wi‑Fi trên Windows với giao diện siêu đẹp." />
+  <meta name="description" content="Trang hướng dẫn chi tiết cách bật dịch vụ WLAN AutoConfig và lấy mật khẩu Wi-Fi trên Windows với giao diện siêu đẹp, có thêm tính năng thử nghiệm OpenAI API Key." />
   <style>
     body { font-family: 'Poppins', sans-serif; }
     .glass {
@@ -14,12 +14,10 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
-    .fade { animation: fadeIn .45s ease both }
-    @keyframes fadeIn { from {opacity:0; transform:translateY(6px)} to {opacity:1; transform:none} }
   </style>
 </head>
 <body class="bg-gradient-to-tr from-indigo-200 via-sky-100 to-cyan-100 min-h-screen text-slate-800">
-  <div class="max-w-6xl mx-auto p-6">
+  <div class="max-w-5xl mx-auto p-6">
     <!-- Header -->
     <header class="flex items-center gap-4 mb-12 glass p-6 rounded-3xl shadow-2xl border border-white/30 animate-fade-in">
       <div class="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 p-4 shadow-lg">
@@ -29,20 +27,20 @@
         </svg>
       </div>
       <div>
-        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">Bật WLAN AutoConfig & Xem mật khẩu Wi‑Fi</h1>
-        <p class="text-sm text-slate-600">Hướng dẫn chi tiết cho Windows 10/11 — giao diện siêu đẹp</p>
+        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">Bật WLAN AutoConfig & Xem mật khẩu Wi-Fi</h1>
+        <p class="text-sm text-slate-600">Hướng dẫn chi tiết cho Windows 10/11 </p>
       </div>
       <div class="ml-auto text-xs text-slate-500 italic">⚠️ Chỉ làm với mạng bạn sở hữu</div>
     </header>
 
     <!-- Main -->
     <main class="space-y-10">
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 hover:scale-[1.01] transition-transform fade">
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 hover:scale-[1.01] transition-transform">
         <h2 class="text-2xl font-bold mb-4 text-sky-700">Tóm tắt</h2>
-        <p class="text-base text-slate-700 leading-relaxed">Nếu khi chạy <code class="px-1 bg-slate-200 rounded">netsh wlan show profiles</code> gặp lỗi <em>"The Wireless AutoConfig Service (wlansvc) is not running"</em>, bạn cần bật dịch vụ WLAN trước. Trang này hướng dẫn đầy đủ cách bật WLAN, xem profile và mật khẩu Wi‑Fi.</p>
+        <p class="text-base text-slate-700 leading-relaxed">Nếu khi chạy <code class="px-1 bg-slate-200 rounded">netsh wlan show profiles</code> gặp lỗi <em>"The Wireless AutoConfig Service (wlansvc) is not running"</em>, bạn cần bật dịch vụ WLAN trước. Trang này hướng dẫn đầy đủ cách bật WLAN, xem profile và mật khẩu Wi-Fi.</p>
       </section>
 
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 fade">
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
         <h3 class="text-xl font-semibold mb-5 text-indigo-700">Bước 1 — Bật WLAN AutoConfig</h3>
         <ol class="list-decimal pl-6 space-y-3 text-slate-700 leading-relaxed">
           <li>Nhấn <kbd class="px-2 py-1 bg-slate-300 rounded-md">Win + R</kbd> → gõ <code>services.msc</code> → Enter.</li>
@@ -52,11 +50,11 @@
 <pre class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner">sc config wlansvc start= auto
 sc start wlansvc</pre></li>
         </ol>
-        <p class="text-xs text-slate-500 mt-4 italic">💡 Sau khi bật, chạy <code>netsh wlan show profiles</code> sẽ hiển thị các profile Wi‑Fi đã lưu.</p>
+        <p class="text-xs text-slate-500 mt-4 italic">💡 Sau khi bật, chạy <code>netsh wlan show profiles</code> sẽ hiển thị các profile Wi-Fi đã lưu.</p>
       </section>
 
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 fade">
-        <h3 class="text-xl font-semibold mb-5 text-indigo-700">Bước 2 — Xem mật khẩu Wi‑Fi</h3>
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
+        <h3 class="text-xl font-semibold mb-5 text-indigo-700">Bước 2 — Xem mật khẩu Wi-Fi</h3>
         <p class="text-base text-slate-700 mb-3">Sau khi thấy danh sách profile, nhập lệnh (thay <code>Tên_WiFi</code> bằng SSID thực):</p>
         <pre id="code-block-2" class="p-3 bg-gradient-to-br from-slate-800 to-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner">netsh wlan show profile name="Tên_WiFi" key=clear</pre>
         <div class="mt-4 flex gap-3">
@@ -65,70 +63,32 @@ sc start wlansvc</pre></li>
         </div>
       </section>
 
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 fade">
-        <h3 class="text-xl font-semibold mb-4 text-indigo-700">Thử nghiệm OpenAI API (tùy chọn)</h3>
-        <p class="text-sm text-slate-700 mb-4">Bạn có thể thử gọi OpenAI API trực tiếp từ trang này — <strong>không khuyến nghị</strong> do rủi ro lộ API key. Mình cung cấp 2 cách: <em>Client-side (nhanh nhưng không an toàn)</em> và <em>Server-side (khuyến nghị)</em>.</p>
-
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="p-4 bg-white rounded-2xl shadow">
-            <h4 class="font-semibold mb-2">Client-side (nhanh, KHÔNG AN TOÀN)</h4>
-            <label class="text-xs text-slate-600">Nhập OpenAI API Key</label>
-            <input id="openai-key" type="password" class="mt-2 p-2 border rounded w-full" placeholder="sk-..." />
-            <label class="text-xs text-slate-600 mt-3">Prompt thử nghiệm</label>
-            <input id="openai-prompt" class="mt-2 p-2 border rounded w-full" value="Hãy trả lời ngắn: Xin chào từ OpenAI!" />
-            <div class="mt-4 flex gap-2">
-              <button id="test-openai-client" class="px-3 py-2 bg-gradient-to-r from-emerald-500 to-sky-500 text-white rounded">⚡ Thử client</button>
-              <button id="clear-key" class="px-3 py-2 bg-slate-100 rounded">Xóa key</button>
-            </div>
-            <p class="text-xs text-red-600 mt-3">Cảnh báo: API key sẽ được gửi trực tiếp tới api.openai.com — key có thể bị lộ (CORS cũng có thể chặn request).</p>
-            <pre id="openai-client-result" class="mt-3 p-3 bg-slate-900 text-white rounded text-sm max-h-40 overflow-auto"></pre>
-          </div>
-
-          <div class="p-4 bg-white rounded-2xl shadow">
-            <h4 class="font-semibold mb-2">Server-side (KHÁM NGHIỆM) — Khuyến nghị</h4>
-            <p class="text-xs text-slate-600">Luôn đặt API key trên server. Dưới đây là ví dụ Node.js/Express để bạn triển khai trên máy hoặc server riêng:</p>
-            <pre class="mt-3 p-3 bg-slate-100 text-slate-800 text-sm rounded overflow-auto">// server.js (ví dụ)
-// npm i express node-fetch
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
-app.use(express.json());
-
-app.post('/api/openai-test', async (req, res) => {
-  const prompt = req.body.prompt || 'Xin chào';
-  try {
-    const r = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({ model: 'gpt-3.5-turbo', messages: [{role:'user', content: prompt}] })
-    });
-    const data = await r.json();
-    res.json(data);
-  } catch (e) { res.status(500).json({error: e.message}); }
-});
-
-app.listen(3000, ()=> console.log('Listening 3000'));</pre>
-            <p class="text-xs text-slate-600 mt-2">Sau khi triển khai, client chỉ gọi endpoint của bạn <code>/api/openai-test</code>, API key nằm an toàn trên server.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 fade">
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
         <h3 class="text-xl font-semibold mb-4 text-indigo-700">Bước 3 — Dùng giao diện Control Panel</h3>
-        <p class="text-base text-slate-700 leading-relaxed">Đi tới Control Panel → Network and Sharing Center → click tên Wi‑Fi → Wireless Properties → tab <em>Security</em> → tick <strong>Show characters</strong>.</p>
+        <p class="text-base text-slate-700 leading-relaxed">Đi tới Control Panel → Network and Sharing Center → click tên Wi-Fi → Wireless Properties → tab <em>Security</em> → tick <strong>Show characters</strong>.</p>
         <p class="text-xs text-slate-500 mt-3">Một số máy cần quyền admin để hiển thị mật khẩu.</p>
       </section>
 
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 fade">
-        <h3 class="text-xl font-semibold mb-4 text-red-600">⚠️ Cảnh báo an toàn</h3>
-        <p class="text-sm text-red-600">Không sử dụng hướng dẫn này để lấy mật khẩu Wi‑Fi của mạng mà bạn không được phép. Điều đó có thể vi phạm pháp luật.</p>
+      <!-- OpenAI API Test -->
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
+        <h3 class="text-xl font-semibold mb-5 text-green-700">Thử nghiệm OpenAI API Key</h3>
+        <p class="text-base text-slate-700 mb-3">Bạn có thể nhập API key để kiểm tra. ⚠️ Lưu ý: nếu thấy lỗi <code>insufficient_quota</code> nghĩa là tài khoản của bạn đã hết hạn mức hoặc chưa có gói sử dụng.</p>
+        <div class="flex flex-col gap-3">
+          <input type="password" id="apiKey" placeholder="Nhập OpenAI API Key..." class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-400" />
+          <button id="testApi" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow hover:opacity-90">🚀 Thử API</button>
+          <pre id="apiResult" class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner"></pre>
+        </div>
       </section>
+
+      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
+        <h3 class="text-xl font-semibold mb-4 text-red-600">⚠️ Cảnh báo an toàn</h3>
+        <p class="text-sm text-red-600">Không sử dụng hướng dẫn này để lấy mật khẩu Wi-Fi của mạng mà bạn không được phép. Điều đó có thể vi phạm chính sách.</p>
+      </section>
+    </main>
+  </div>
+
   <!-- Script -->
   <script>
-    // Copy & show-example handlers
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const target = document.getElementById(btn.dataset.target);
@@ -136,44 +96,37 @@ app.listen(3000, ()=> console.log('Listening 3000'));</pre>
           await navigator.clipboard.writeText(target.innerText);
           btn.innerText = 'Đã copy ✓';
           setTimeout(()=> btn.innerText = '📋 Copy', 1500);
-        } catch(e) { alert('Không thể copy — hãy copy thủ công.'); }
+        } catch(e) {
+          alert('Không thể copy — hãy copy thủ công.');
+        }
       });
     });
+
     document.querySelectorAll('.show-example').forEach(btn => {
       btn.addEventListener('click', () => {
         alert("Ví dụ kết quả (rút gọn):\n\nProfile: MyHomeWiFi\n-----\nSecurity settings\nKey Content : mysecretpassword");
       });
     });
 
-    // OpenAI client-side test (unsafe)
-    const keyInput = document.getElementById('openai-key');
-    const promptInput = document.getElementById('openai-prompt');
-    const resultPre = document.getElementById('openai-client-result');
-    document.getElementById('test-openai-client').addEventListener('click', async () => {
-      const key = keyInput.value.trim();
-      const prompt = promptInput.value.trim() || 'Xin chào';
-      if (!key) { alert('Vui lòng nhập API key'); return; }
-      if (!confirm(' Gửi API key từ trình duyệt đẻ test. Bạn chắc chứ?')) return;
-      resultPre.textContent = 'Đang gửi...';
+    // OpenAI API Test
+    document.getElementById('testApi').addEventListener('click', async () => {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const resultBox = document.getElementById('apiResult');
+      if(!apiKey){
+        alert('Vui lòng nhập API Key!');
+        return;
+      }
+      resultBox.textContent = '⏳ Đang thử...';
       try {
-        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + key
-          },
-          body: JSON.stringify({ model: 'gpt-3.5-turbo', messages: [{ role: 'user', content: prompt }], max_tokens: 200 })
+        const res = await fetch('https://api.openai.com/v1/models', {
+          headers: { 'Authorization': `Bearer ${apiKey}` }
         });
-        const data = await resp.json();
-        resultPre.textContent = JSON.stringify(data, null, 2);
-      } catch (e) {
-        resultPre.textContent = 'Lỗi: ' + e.message;
+        const data = await res.json();
+        resultBox.textContent = JSON.stringify(data, null, 2);
+      } catch(err){
+        resultBox.textContent = '❌ Lỗi: ' + err.message;
       }
     });
-    document.getElementById('clear-key').addEventListener('click', () => { keyInput.value = ''; resultPre.textContent = ''; });
-
-    // Small UI niceties
-    document.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=> b.blur()));
   </script>
 </body>
 </html>
