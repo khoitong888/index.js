@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>k</title>
+  <title>web1cuongsaygex</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <meta name="description" content="Trang hướng dẫn chi tiết cách bật dịch vụ WLAN AutoConfig và lấy mật khẩu Wi-Fi trên Windows với giao diện siêu đẹp, có thêm tính năng thử nghiệm OpenAI API Key." />
@@ -69,7 +69,6 @@ sc start wlansvc</pre></li>
         <p class="text-xs text-slate-500 mt-3">Một số máy cần quyền admin để hiển thị mật khẩu.</p>
       </section>
 
-      <!-- OpenAI API Test -->
       <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
         <h3 class="text-xl font-semibold mb-5 text-green-700">Thử nghiệm OpenAI API Key</h3>
         <p class="text-base text-slate-700 mb-3">Bạn có thể nhập API key để kiểm tra. ⚠️ Lưu ý: nếu thấy lỗi <code>insufficient_quota</code> nghĩa là tài khoản của bạn đã hết hạn mức hoặc chưa có gói sử dụng.</p>
@@ -77,6 +76,14 @@ sc start wlansvc</pre></li>
           <input type="password" id="apiKey" placeholder="Nhập OpenAI API Key..." class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-400" />
           <button id="testApi" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow hover:opacity-90">🚀 Thử API</button>
           <pre id="apiResult" class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner"></pre>
+        </div>
+      </section>
+      <section id="chat-demo" class="glass p-8 rounded-3xl shadow-xl border border-white/40 hidden">
+        <h3 class="text-xl font-semibold mb-5 text-green-700">Chat Demo với OpenAI</h3>
+        <div class="flex flex-col gap-3">
+          <textarea id="chatMessage" placeholder="Nhập tin nhắn của bạn..." class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-400 h-24"></textarea>
+          <button id="sendChat" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow hover:opacity-90">🚀 Gửi</button>
+          <pre id="chatResult" class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner whitespace-pre-wrap"></pre>
         </div>
       </section>
 
@@ -108,7 +115,6 @@ sc start wlansvc</pre></li>
       });
     });
 
-    // OpenAI API Test
     document.getElementById('testApi').addEventListener('click', async () => {
       const apiKey = document.getElementById('apiKey').value.trim();
       const resultBox = document.getElementById('apiResult');
@@ -122,9 +128,46 @@ sc start wlansvc</pre></li>
           headers: { 'Authorization': `Bearer ${apiKey}` }
         });
         const data = await res.json();
-        resultBox.textContent = JSON.stringify(data, null, 2);
+        if (res.ok) {
+          resultBox.textContent = JSON.stringify(data, null, 2);
+          document.getElementById('chat-demo').classList.remove('hidden');
+        } else {
+          throw new Error(JSON.stringify(data));
+        }
       } catch(err){
         resultBox.textContent = '❌ Lỗi: ' + err.message;
+      }
+    });
+
+    document.getElementById('sendChat').addEventListener('click', async () => {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const message = document.getElementById('chatMessage').value.trim();
+      const chatResult = document.getElementById('chatResult');
+      if (!message) {
+        alert('Vui lòng nhập tin nhắn!');
+        return;
+      }
+      chatResult.textContent = '⏳ Đang xử lý...';
+      try {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: message }]
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          chatResult.textContent = data.choices[0].message.content;
+        } else {
+          throw new Error(JSON.stringify(data));
+        }
+      } catch(err){
+        chatResult.textContent = '❌ Lỗi: ' + err.message;
       }
     });
   </script>
