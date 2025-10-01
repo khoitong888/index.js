@@ -1,175 +1,376 @@
-<!doctype html>
-<html lang="vi">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>web1cuongsaygex</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click Simulator</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <meta name="description" content="Trang hướng dẫn chi tiết cách bật dịch vụ WLAN AutoConfig và lấy mật khẩu Wi-Fi trên Windows với giao diện siêu đẹp, có thêm tính năng thử nghiệm OpenAI API Key." />
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.12.7/umd/Recharts.min.js"></script>
   <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
+    body { margin: 0; overflow-x: hidden; }
+    .particle { position: absolute; pointer-events: none; transition: all 0.5s ease; }
+    .click-button { transition: transform 0.1s ease; }
+    .click-button:active { transform: scale(0.95); }
+    .combo-animation { animation: combo-pop 0.5s ease; }
+    @keyframes combo-pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .error-boundary { background: rgba(255, 0, 0, 0.2); padding: 16px; border-radius: 8px; }
   </style>
 </head>
-<body class="bg-gradient-to-tr from-indigo-200 via-sky-100 to-cyan-100 min-h-screen text-slate-800">
-  <div class="max-w-5xl mx-auto p-6">
-    <!-- Header -->
-    <header class="flex items-center gap-4 mb-12 glass p-6 rounded-3xl shadow-2xl border border-white/30 animate-fade-in">
-      <div class="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 p-4 shadow-lg">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 3C7.03 3 2.74 5.11 0 8.5l2.5 2.5C5 7.5 8.8 5.5 12 5.5s7 2 9.5 5.5L24 8.5C21.26 5.11 16.97 3 12 3z" fill="white"/>
-          <path d="M2 15.5C4.74 18.89 9.03 21 14 21s9.26-2.11 12-5.5l-2.5-2.5C19 18.5 15.2 20.5 12 20.5s-7-2-9.5-5.5L2 15.5z" fill="white"/>
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-4xl font-extrabold bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent drop-shadow-sm">Bật WLAN AutoConfig & Xem mật khẩu Wi-Fi</h1>
-        <p class="text-sm text-slate-600">Hướng dẫn chi tiết cho Windows 10/11 </p>
-      </div>
-      <div class="ml-auto text-xs text-slate-500 italic">⚠️ Chỉ làm với mạng bạn sở hữu</div>
-    </header>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white min-h-screen">
+  <div id="root"></div>
 
-    <!-- Main -->
-    <main class="space-y-10">
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40 hover:scale-[1.01] transition-transform">
-        <h2 class="text-2xl font-bold mb-4 text-sky-700">Tóm tắt</h2>
-        <p class="text-base text-slate-700 leading-relaxed">Nếu khi chạy <code class="px-1 bg-slate-200 rounded">netsh wlan show profiles</code> gặp lỗi <em>"The Wireless AutoConfig Service (wlansvc) is not running"</em>, bạn cần bật dịch vụ WLAN trước. Trang này hướng dẫn đầy đủ cách bật WLAN, xem profile và mật khẩu Wi-Fi.</p>
-      </section>
+  <script type="text/javascript">
+    const { useState, useEffect, useCallback, useRef } = React;
+    const Recharts = window.Recharts || {};
+    const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;
 
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
-        <h3 class="text-xl font-semibold mb-5 text-indigo-700">Bước 1 — Bật WLAN AutoConfig</h3>
-        <ol class="list-decimal pl-6 space-y-3 text-slate-700 leading-relaxed">
-          <li>Nhấn <kbd class="px-2 py-1 bg-slate-300 rounded-md">Win + R</kbd> → gõ <code>services.msc</code> → Enter.</li>
-          <li>Tìm dịch vụ <strong>WLAN AutoConfig</strong> → chuột phải → <em>Properties</em>.</li>
-          <li>Trong <strong>Startup type</strong> chọn <em>Automatic</em> → nhấn <strong>Start</strong> → Apply → OK.</li>
-          <li>Nếu muốn nhanh bằng CMD: mở Command Prompt (Admin) và chạy:<br>
-<pre class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner">sc config wlansvc start= auto
-sc start wlansvc</pre></li>
-        </ol>
-        <p class="text-xs text-slate-500 mt-4 italic">💡 Sau khi bật, chạy <code>netsh wlan show profiles</code> sẽ hiển thị các profile Wi-Fi đã lưu.</p>
-      </section>
-
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
-        <h3 class="text-xl font-semibold mb-5 text-indigo-700">Bước 2 — Xem mật khẩu Wi-Fi</h3>
-        <p class="text-base text-slate-700 mb-3">Sau khi thấy danh sách profile, nhập lệnh (thay <code>Tên_WiFi</code> bằng SSID thực):</p>
-        <pre id="code-block-2" class="p-3 bg-gradient-to-br from-slate-800 to-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner">netsh wlan show profile name="Tên_WiFi" key=clear</pre>
-        <div class="mt-4 flex gap-3">
-          <button class="copy-btn px-4 py-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:opacity-90 transition text-white rounded-xl shadow-lg" data-target="code-block-2">📋 Copy</button>
-          <button class="show-example px-4 py-2 bg-white/70 hover:bg-white/90 transition rounded-xl shadow">🔍 Xem ví dụ</button>
-        </div>
-      </section>
-
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
-        <h3 class="text-xl font-semibold mb-4 text-indigo-700">Bước 3 — Dùng giao diện Control Panel</h3>
-        <p class="text-base text-slate-700 leading-relaxed">Đi tới Control Panel → Network and Sharing Center → click tên Wi-Fi → Wireless Properties → tab <em>Security</em> → tick <strong>Show characters</strong>.</p>
-        <p class="text-xs text-slate-500 mt-3">Một số máy cần quyền admin để hiển thị mật khẩu.</p>
-      </section>
-
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
-        <h3 class="text-xl font-semibold mb-5 text-green-700">Thử nghiệm OpenAI API Key</h3>
-        <p class="text-base text-slate-700 mb-3">Bạn có thể nhập API key để kiểm tra. ⚠️ Lưu ý: nếu thấy lỗi <code>insufficient_quota</code> nghĩa là tài khoản của bạn đã hết hạn mức hoặc chưa có gói sử dụng.</p>
-        <div class="flex flex-col gap-3">
-          <input type="password" id="apiKey" placeholder="Nhập OpenAI API Key..." class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-400" />
-          <button id="testApi" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow hover:opacity-90">🚀 Thử API</button>
-          <pre id="apiResult" class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner"></pre>
-        </div>
-      </section>
-      <section id="chat-demo" class="glass p-8 rounded-3xl shadow-xl border border-white/40 hidden">
-        <h3 class="text-xl font-semibold mb-5 text-green-700">Chat Demo với OpenAI</h3>
-        <div class="flex flex-col gap-3">
-          <textarea id="chatMessage" placeholder="Nhập tin nhắn của bạn..." class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-400 h-24"></textarea>
-          <button id="sendChat" class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl shadow hover:opacity-90">🚀 Gửi</button>
-          <pre id="chatResult" class="p-3 bg-slate-900 text-white text-sm rounded-xl overflow-x-auto shadow-inner whitespace-pre-wrap"></pre>
-        </div>
-      </section>
-
-      <section class="glass p-8 rounded-3xl shadow-xl border border-white/40">
-        <h3 class="text-xl font-semibold mb-4 text-red-600">⚠️ Cảnh báo an toàn</h3>
-        <p class="text-sm text-red-600">Không sử dụng hướng dẫn này để lấy mật khẩu Wi-Fi của mạng mà bạn không được phép. Điều đó có thể vi phạm chính sách.</p>
-      </section>
-    </main>
-  </div>
-
-  <!-- Script -->
-  <script>
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const target = document.getElementById(btn.dataset.target);
-        try {
-          await navigator.clipboard.writeText(target.innerText);
-          btn.innerText = 'Đã copy ✓';
-          setTimeout(()=> btn.innerText = '📋 Copy', 1500);
-        } catch(e) {
-          alert('Không thể copy — hãy copy thủ công.');
-        }
-      });
-    });
-
-    document.querySelectorAll('.show-example').forEach(btn => {
-      btn.addEventListener('click', () => {
-        alert("Ví dụ kết quả (rút gọn):\n\nProfile: MyHomeWiFi\n-----\nSecurity settings\nKey Content : mysecretpassword");
-      });
-    });
-
-    document.getElementById('testApi').addEventListener('click', async () => {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const resultBox = document.getElementById('apiResult');
-      if(!apiKey){
-        alert('Vui lòng nhập API Key!');
-        return;
+    class ErrorBoundary extends React.Component {
+      state = { hasError: false, error: null };
+      static getDerivedStateFromError(error) {
+        return { hasError: true, error };
       }
-      resultBox.textContent = '⏳ Đang thử...';
-      try {
-        const res = await fetch('https://api.openai.com/v1/models', {
-          headers: { 'Authorization': `Bearer ${apiKey}` }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          resultBox.textContent = JSON.stringify(data, null, 2);
-          document.getElementById('chat-demo').classList.remove('hidden');
+      render() {
+        if (this.state.hasError) {
+          return React.createElement("div", { className: "error-boundary" },
+            React.createElement("h2", null, "Something went wrong!"),
+            React.createElement("p", null, this.state.error?.message || 'Unknown error'),
+            React.createElement("p", null, this.state.error?.message.includes('Recharts') ? 'Chart failed to load. Try refreshing.' : ''),
+            React.createElement("button", { onClick: () => window.location.reload(), className: "bg-blue-600 px-4 py-2 rounded-lg" }, "Reload")
+          );
+        }
+        return this.props.children;
+      }
+    }
+
+    const Particle = ({ x, y, color, size }) => React.createElement("div", {
+      className: "particle rounded-full",
+      style: {
+        left: x,
+        top: y,
+        backgroundColor: color,
+        width: size,
+        height: size,
+        opacity: 0.7,
+        transform: `translate(-50%, -50%)`
+      }
+    });
+
+    const ClickSimulator = () => {
+      const [clicks, setClicks] = useState(() => parseInt(localStorage.getItem('clicks')) || 0);
+      const [totalClicks, setTotalClicks] = useState(() => parseInt(localStorage.getItem('totalClicks')) || 0);
+      const [clickPower, setClickPower] = useState(() => parseInt(localStorage.getItem('clickPower')) || 1);
+      const [autoClicker, setAutoClicker] = useState(() => parseFloat(localStorage.getItem('autoClicker')) || 0);
+      const [cps, setCps] = useState(0);
+      const [particles, setParticles] = useState([]);
+      const [clickMode, setClickMode] = useState('normal');
+      const [prestigeLevel, setPrestigeLevel] = useState(() => parseInt(localStorage.getItem('prestigeLevel')) || 0);
+      const [prestigePoints, setPrestigePoints] = useState(() => parseInt(localStorage.getItem('prestigePoints')) || 0);
+      const [combo, setCombo] = useState(0);
+      const [lastClickTime, setLastClickTime] = useState(Date.now());
+      const [showCombo, setShowCombo] = useState(false);
+      const [level, setLevel] = useState(() => parseInt(localStorage.getItem('level')) || 1);
+      const [experience, setExperience] = useState(() => parseInt(localStorage.getItem('experience')) || 0);
+      const [money, setMoney] = useState(() => parseInt(localStorage.getItem('money')) || 0);
+      const [gems, setGems] = useState(() => parseInt(localStorage.getItem('gems')) || 0);
+      const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'purple');
+      const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('soundEnabled') !== 'false');
+      const [particlesEnabled, setParticlesEnabled] = useState(() => localStorage.getItem('particlesEnabled') !== 'false');
+      const [clickStreak, setClickStreak] = useState(0);
+      const [sessionTime, setSessionTime] = useState(0);
+      const [eventActive, setEventActive] = useState(false);
+      const [eventMultiplier, setEventMultiplier] = useState(1);
+      const [minigameActive, setMinigameActive] = useState(false);
+      const [minigameScore, setMinigameScore] = useState(0);
+      const [inventory, setInventory] = useState(() => JSON.parse(localStorage.getItem('inventory')) || []);
+      const [dailyRewards, setDailyRewards] = useState(() => JSON.parse(localStorage.getItem('dailyRewards')) || []);
+      const [showStats, setShowStats] = useState(false);
+      const [showInventory, setShowInventory] = useState(false);
+      const [activeAbility, setActiveAbility] = useState(null);
+      const [abilityCooldown, setAbilityCooldown] = useState(0);
+      const [leaderboard, setLeaderboard] = useState(() => JSON.parse(localStorage.getItem('leaderboard')) || []);
+
+      const buttonRef = useRef(null);
+      const particleIdRef = useRef(0);
+
+      const themes = {
+        purple: 'from-purple-900 via-blue-900 to-indigo-900',
+        fire: 'from-red-900 via-orange-900 to-yellow-900',
+        ice: 'from-blue-900 via-cyan-900 to-teal-900',
+        nature: 'from-green-900 via-emerald-900 to-lime-900'
+      };
+
+      const themeColors = {
+        purple: ['bg-purple-400', 'bg-blue-400', 'bg-indigo-400', 'bg-pink-400'],
+        fire: ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-amber-400'],
+        ice: ['bg-blue-400', 'bg-cyan-400', 'bg-teal-400', 'bg-sky-400'],
+        nature: ['bg-green-400', 'bg-emerald-400', 'bg-lime-400', 'bg-green-500']
+      };
+
+      const [achievements, setAchievements] = useState([
+        { id: 'first_click', name: 'First Steps', description: 'Make your first click', requirement: 1, unlocked: false, icon: '🎯', reward: 10 },
+        { id: 'click_100', name: 'Century', description: 'Reach 100 clicks', requirement: 100, unlocked: false, icon: '🏆', reward: 50 },
+        { id: 'click_1000', name: 'Millennium', description: 'Reach 1,000 clicks', requirement: 1000, unlocked: false, icon: '🌟', reward: 200 },
+        { id: 'click_10000', name: 'Master Clicker', description: 'Reach 10,000 clicks', requirement: 10000, unlocked: false, icon: '🔥', reward: 1000 },
+        { id: 'click_100000', name: 'Click Legend', description: 'Reach 100,000 clicks', requirement: 100000, unlocked: false, icon: '👑', reward: 5000 },
+        { id: 'cps_10', name: 'Speed Demon', description: 'Reach 10 CPS', requirement: 10, unlocked: false, icon: '⚡', reward: 500 }
+      ]);
+
+      const [powerUps, setPowerUps] = useState([
+        { id: 'click_power', name: 'Click Power', cost: 50, effect: 1, owned: 0, description: 'Increase click power by 1', maxLevel: 50, icon: '💪' },
+        { id: 'auto_clicker', name: 'Auto Clicker', cost: 100, effect: 0.1, owned: 0, description: 'Generate clicks automatically', icon: '🤖' },
+        { id: 'combo_boost', name: 'Combo Boost', cost: 200, effect: 0.5, owned: 0, description: 'Increase combo multiplier', maxLevel: 20, icon: '🚀' }
+      ]);
+
+      const playSound = useCallback(() => {
+        if (soundEnabled) {
+          const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+          audio.play().catch(err => console.log('Audio playback failed:', err));
+        }
+      }, [soundEnabled]);
+
+      const createParticle = useCallback((clientX, clientY) => {
+        if (!particlesEnabled) return;
+        const colors = themeColors[theme];
+        const newParticle = {
+          id: particleIdRef.current++,
+          x: clientX,
+          y: clientY,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 20 + 10,
+          velocity: { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 5 },
+          lifetime: 500
+        };
+        setParticles(prev => [...prev, newParticle]);
+        setTimeout(() => {
+          setParticles(prev => prev.filter(p => p.id !== newParticle.id));
+        }, newParticle.lifetime);
+      }, [particlesEnabled, theme]);
+
+      const handleClick = useCallback((e) => {
+        playSound();
+        createParticle(e.clientX, e.clientY);
+        const currentTime = Date.now();
+        const timeDiff = currentTime - lastClickTime;
+        const clickValue = clickMode === 'turbo' ? clickPower * 2 : clickPower;
+        setClicks(prev => prev + clickValue);
+        setTotalClicks(prev => prev + clickValue);
+        setMoney(prev => prev + clickValue);
+        setExperience(prev => prev + clickValue);
+        if (timeDiff < 1000) {
+          setCombo(prev => prev + 1);
+          setShowCombo(true);
+          setTimeout(() => setShowCombo(false), 1000);
         } else {
-          throw new Error(JSON.stringify(data));
+          setCombo(0);
         }
-      } catch(err){
-        resultBox.textContent = '❌ Lỗi: ' + err.message;
-      }
-    });
+        setLastClickTime(currentTime);
+        checkAchievements();
+      }, [clickPower, clickMode, lastClickTime, playSound, createParticle]);
 
-    document.getElementById('sendChat').addEventListener('click', async () => {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const message = document.getElementById('chatMessage').value.trim();
-      const chatResult = document.getElementById('chatResult');
-      if (!message) {
-        alert('Vui lòng nhập tin nhắn!');
-        return;
-      }
-      chatResult.textContent = '⏳ Đang xử lý...';
-      try {
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: message }]
-          })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          chatResult.textContent = data.choices[0].message.content;
-        } else {
-          throw new Error(JSON.stringify(data));
+      const checkAchievements = useCallback(() => {
+        setAchievements(prev => prev.map(achievement => {
+          if (!achievement.unlocked && (totalClicks >= achievement.requirement || cps >= achievement.requirement)) {
+            setMoney(prev => prev + achievement.reward);
+            return { ...achievement, unlocked: true };
+          }
+          return achievement;
+        }));
+      }, [totalClicks, cps]);
+
+      const buyPowerUp = useCallback((powerUpId) => {
+        const powerUp = powerUps.find(p => p.id === powerUpId);
+        if (!powerUp || money < powerUp.cost || (powerUp.maxLevel && powerUp.owned >= powerUp.maxLevel)) return;
+        setMoney(prev => prev - powerUp.cost);
+        setPowerUps(prev => prev.map(p => p.id === powerUpId ? { ...p, owned: p.owned + 1 } : p));
+        if (powerUpId === 'click_power') setClickPower(prev => prev + powerUp.effect);
+        if (powerUpId === 'auto_clicker') setAutoClicker(prev => prev + powerUp.effect);
+        if (powerUpId === 'combo_boost') setClickPower(prev => prev + powerUp.effect);
+      }, [money, powerUps]);
+
+      const handlePrestige = useCallback(() => {
+        if (clicks >= 1000) {
+          const newPoints = Math.floor(clicks / 1000);
+          setPrestigePoints(prev => prev + newPoints);
+          setPrestigeLevel(prev => prev + 1);
+          setLeaderboard(prev => [...prev, { name: `Player${prestigeLevel + 1}`, score: totalClicks }].sort((a, b) => b.score - a.score).slice(0, 5));
+          setClicks(0);
+          setClickPower(1);
+          setAutoClicker(0);
+          setMoney(0);
+          setExperience(0);
+          setLevel(1);
         }
-      } catch(err){
-        chatResult.textContent = '❌ Lỗi: ' + err.message;
-      }
-    });
+      }, [clicks, prestigeLevel, totalClicks]);
+
+      const toggleTheme = useCallback(() => {
+        const themeOrder = ['purple', 'fire', 'ice', 'nature'];
+        const currentIndex = themeOrder.indexOf(theme);
+        const nextTheme = themeOrder[(currentIndex + 1) % themeOrder.length];
+        setTheme(nextTheme);
+        localStorage.setItem('theme', nextTheme);
+        document.body.className = `bg-gradient-to-br ${themes[nextTheme]} text-white min-h-screen`;
+      }, [theme]);
+
+      const saveGame = useCallback(() => {
+        localStorage.setItem('clicks', clicks.toString());
+        localStorage.setItem('totalClicks', totalClicks.toString());
+        localStorage.setItem('clickPower', clickPower.toString());
+        localStorage.setItem('autoClicker', autoClicker.toString());
+        localStorage.setItem('prestigeLevel', prestigeLevel.toString());
+        localStorage.setItem('prestigePoints', prestigePoints.toString());
+        localStorage.setItem('level', level.toString());
+        localStorage.setItem('experience', experience.toString());
+        localStorage.setItem('money', money.toString());
+        localStorage.setItem('gems', gems.toString());
+        localStorage.setItem('soundEnabled', soundEnabled.toString());
+        localStorage.setItem('particlesEnabled', particlesEnabled.toString());
+        localStorage.setItem('inventory', JSON.stringify(inventory));
+        localStorage.setItem('dailyRewards', JSON.stringify(dailyRewards));
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+      }, [clicks, totalClicks, clickPower, autoClicker, prestigeLevel, prestigePoints, level, experience, money, gems, soundEnabled, particlesEnabled, inventory, dailyRewards, leaderboard]);
+
+      const statsData = [
+        { name: 'Clicks', value: totalClicks },
+        { name: 'Money', value: money },
+        { name: 'Level', value: level },
+        { name: 'Prestige', value: prestigeLevel }
+      ];
+
+      useEffect(() => {
+        const autoClick = setInterval(() => {
+          if (autoClicker > 0) {
+            setClicks(prev => prev + autoClicker);
+            setTotalClicks(prev => prev + autoClicker);
+            setMoney(prev => prev + autoClicker);
+            setExperience(prev => prev + autoClicker);
+          }
+        }, 1000);
+        return () => clearInterval(autoClick);
+      }, [autoClicker]);
+
+      useEffect(() => {
+        const cpsInterval = setInterval(() => {
+          setCps(prev => {
+            const newCps = clicks - prev;
+            return newCps >= 0 ? newCps : prev;
+          });
+          setClicks(0);
+        }, 1000);
+        return () => clearInterval(cpsInterval);
+      }, [clicks]);
+
+      useEffect(() => {
+        const sessionTimer = setInterval(() => {
+          setSessionTime(prev => prev + 1);
+        }, 1000);
+        return () => clearInterval(sessionTimer);
+      }, []);
+
+      useEffect(() => {
+        const saveInterval = setInterval(saveGame, 5000);
+        return () => clearInterval(saveInterval);
+      }, [saveGame]);
+
+      return React.createElement("div", { className: "p-4 max-w-6xl mx-auto" },
+        React.createElement("div", { className: "flex justify-between items-center mb-4" },
+          React.createElement("h1", { className: "text-3xl font-bold" }, "Click Simulator"),
+          React.createElement("div", { className: "flex gap-4" },
+            React.createElement("button", { onClick: toggleTheme, className: "bg-gray-800 px-4 py-2 rounded-lg" }, "Change Theme"),
+            React.createElement("button", { onClick: () => setSoundEnabled(!soundEnabled), className: "bg-gray-800 px-4 py-2 rounded-lg" },
+              soundEnabled ? 'Disable Sound' : 'Enable Sound'
+            ),
+            React.createElement("button", { onClick: () => setParticlesEnabled(!particlesEnabled), className: "bg-gray-800 px-4 py-2 rounded-lg" },
+              particlesEnabled ? 'Disable Particles' : 'Enable Particles'
+            )
+          )
+        ),
+        React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4" },
+          React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg" },
+            React.createElement("h2", { className: "text-xl font-bold" }, "Stats"),
+            React.createElement("p", null, "Clicks: ", clicks.toFixed(0)),
+            React.createElement("p", null, "Total Clicks: ", totalClicks.toFixed(0)),
+            React.createElement("p", null, "Money: $", money.toFixed(0)),
+            React.createElement("p", null, "Gems: ", gems),
+            React.createElement("p", null, "Level: ", level),
+            React.createElement("p", null, "Experience: ", experience.toFixed(0)),
+            React.createElement("p", null, "Click Power: ", clickPower.toFixed(1)),
+            React.createElement("p", null, "Auto Clicker: ", autoClicker.toFixed(1), " CPS"),
+            React.createElement("p", null, "Prestige Level: ", prestigeLevel),
+            React.createElement("p", null, "Prestige Points: ", prestigePoints),
+            React.createElement("p", null, "Session Time: ", Math.floor(sessionTime / 60), "m ", sessionTime % 60, "s")
+          ),
+          React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg text-center" },
+            React.createElement("button", {
+              ref: buttonRef,
+              onClick: handleClick,
+              className: "click-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-2xl"
+            }, "Click Me!"),
+            showCombo && combo > 1 && React.createElement("div", { className: "combo-animation text-yellow-400 text-2xl mt-4" },
+              combo, "x Combo!"
+            ),
+            particles.map(particle => React.createElement(Particle, { key: particle.id, ...particle }))
+          ),
+          React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg" },
+            React.createElement("h2", { className: "text-xl font-bold" }, "Power-Ups"),
+            powerUps.map(powerUp => React.createElement("div", { key: powerUp.id, className: "flex justify-between items-center mb-2" },
+              React.createElement("div", null,
+                React.createElement("p", null, powerUp.icon, " ", powerUp.name, " (Level ", powerUp.owned, ")"),
+                React.createElement("p", { className: "text-sm text-gray-400" }, powerUp.description)
+              ),
+              React.createElement("button", {
+                onClick: () => buyPowerUp(powerUp.id),
+                disabled: money < powerUp.cost || (powerUp.maxLevel && powerUp.owned >= powerUp.maxLevel),
+                className: "bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg disabled:opacity-50"
+              }, "Buy ($", powerUp.cost, ")")
+            )),
+            React.createElement("button", {
+              onClick: handlePrestige,
+              disabled: clicks < 1000,
+              className: "bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg mt-4 w-full disabled:opacity-50"
+            }, "Prestige (Requires 1000 Clicks)")
+          )
+        ),
+        React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg mt-4" },
+          React.createElement("h2", { className: "text-xl font-bold" }, "Achievements"),
+          React.createElement("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-4" },
+            achievements.map(achievement => React.createElement("div", { key: achievement.id, className: `p-4 rounded-lg ${achievement.unlocked ? 'bg-green-900' : 'bg-gray-900'}` },
+              React.createElement("p", null, achievement.icon, " ", achievement.name),
+              React.createElement("p", { className: "text-sm text-gray-400" }, achievement.description),
+              React.createElement("p", { className: "text-sm" }, "Reward: ", achievement.reward, " ", achievement.unlocked ? '✅ Unlocked' : '')
+            ))
+          )
+        ),
+        React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg mt-4" },
+          React.createElement("h2", { className: "text-xl font-bold" }, "Leaderboard"),
+          leaderboard.length > 0 ? React.createElement("ul", null,
+            leaderboard.map((entry, index) => React.createElement("li", { key: index, className: "py-2" },
+              entry.name, ": ", entry.score.toFixed(0), " Clicks"
+            ))
+          ) : React.createElement("p", null, "No leaderboard entries yet!")
+        ),
+        React.createElement("div", { className: "bg-gray-800 p-4 rounded-lg mt-4" },
+          React.createElement("h2", { className: "text-xl font-bold" }, "Stats Chart"),
+          Recharts.BarChart ? React.createElement(ResponsiveContainer, { width: "100%", height: 300 },
+            React.createElement(BarChart, { data: statsData },
+              React.createElement(CartesianGrid, { strokeDasharray: "3 3" }),
+              React.createElement(XAxis, { dataKey: "name" }),
+              React.createElement(YAxis, null),
+              React.createElement(Tooltip, null),
+              React.createElement(Bar, { dataKey: "value", fill: "#8884d8" })
+            )
+          ) : React.createElement("p", { className: "text-red-400" }, "Chart failed to load. Please try refreshing the page.")
+        )
+      );
+    };
+
+    ReactDOM.render(
+      React.createElement(ErrorBoundary, null,
+        React.createElement(ClickSimulator)
+      ),
+      document.getElementById('root')
+    );
   </script>
 </body>
 </html>
